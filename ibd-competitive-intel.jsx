@@ -244,29 +244,31 @@ Return ONLY valid JSON:
   }
 ];
 
-// ── Color palette ──
+// ── Color palette (light mode) ──
 const C = {
-  bg: "#0a0c10",
-  surface: "#12151c",
-  surfaceAlt: "#181c26",
-  border: "#1e2333",
-  borderHover: "#2a3150",
-  text: "#e2e4ea",
-  textMuted: "#7a7f94",
-  textDim: "#4a4f64",
-  accent: "#3b82f6",
-  accentDim: "#1e3a5f",
-  green: "#22c55e",
-  greenDim: "#0a3520",
-  amber: "#f59e0b",
-  amberDim: "#3d2800",
-  red: "#ef4444",
-  redDim: "#3d1111",
-  purple: "#a855f7",
-  purpleDim: "#2d1854",
-  cyan: "#06b6d4",
-  cyanDim: "#0a2d35",
-  pink: "#ec4899",
+  bg: "#f8fafc",
+  surface: "#ffffff",
+  surfaceAlt: "#f1f5f9",
+  border: "#e2e8f0",
+  borderHover: "#94a3b8",
+  text: "#0f172a",
+  textMuted: "#64748b",
+  textDim: "#94a3b8",
+  accent: "#21409A",
+  accentDim: "#dbe3f5",
+  brandGreen: "#72BF44",
+  brandGreenDim: "#e4f4d6",
+  green: "#16a34a",
+  greenDim: "#dcfce7",
+  amber: "#d97706",
+  amberDim: "#fef3c7",
+  red: "#dc2626",
+  redDim: "#fee2e2",
+  purple: "#9333ea",
+  purpleDim: "#f3e8ff",
+  cyan: "#0891b2",
+  cyanDim: "#cffafe",
+  pink: "#db2777",
 };
 
 // ── Canonical MOA Groups ──
@@ -356,16 +358,9 @@ const styles = {
     gap: 14,
   },
   logo: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    background: `linear-gradient(135deg, ${C.accent}, ${C.purple})`,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 18,
-    fontWeight: 700,
-    color: "#fff",
+    height: 36,
+    width: "auto",
+    display: "block",
     flexShrink: 0,
   },
   title: {
@@ -671,7 +666,7 @@ function TrialTable({ trials, type = "interventional" }) {
               <tr><td colSpan={columns.length + 1} style={{ ...styles.td, textAlign: "center", color: C.textMuted, padding: 24 }}>No trials found</td></tr>
             )}
             {rows.map((row, i) => (
-              <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surface + "88" }}>
+              <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surfaceAlt }}>
                 {columns.map((col) => (
                   <td key={col.key} style={styles.td}>
                     {col.key === "mechanism" ? <MOABadge moa={row[col.key]} /> :
@@ -857,16 +852,16 @@ function TrialHeatMap({ data }) {
 
       // Tooltip
       const trialList = city.trials.slice(0, 4).map(t =>
-        `<div style="font-size:12px;color:#ccc;margin:2px 0;">${(t.drug || t.study || "").slice(0, 30)} — ${(t.sponsor || "").slice(0, 18)}</div>`
+        `<div style="font-size:12px;color:${C.textMuted};margin:2px 0;">${(t.drug || t.study || "").slice(0, 30)} — ${(t.sponsor || "").slice(0, 18)}</div>`
       ).join("");
       marker.bindTooltip(
         `<div style="font-family:${font};min-width:180px;">` +
-        `<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">${city.name}</div>` +
-        `<div style="font-size:12px;color:#a0a0b0;margin-bottom:6px;">${tooltipExtra}</div>` +
+        `<div style="font-size:14px;font-weight:700;color:${C.text};margin-bottom:4px;">${city.name}</div>` +
+        `<div style="font-size:12px;color:${C.textMuted};margin-bottom:6px;">${tooltipExtra}</div>` +
         trialList +
-        (city.trials.length > 4 ? `<div style="font-size:11px;color:#666;">+${city.trials.length - 4} more</div>` : "") +
+        (city.trials.length > 4 ? `<div style="font-size:11px;color:${C.textDim};">+${city.trials.length - 4} more</div>` : "") +
         `</div>`,
-        { sticky: true, className: "dark-tooltip", direction: "top", offset: [0, -radius] }
+        { sticky: true, className: "cf-tooltip", direction: "top", offset: [0, -radius] }
       );
 
       // Count label for high-density cities
@@ -889,15 +884,15 @@ function TrialHeatMap({ data }) {
     if (leafletMap.current && window.L) updateMarkers();
   }, [viewMode, data]);
 
-  // Inject dark tooltip styles
+  // Inject tooltip styles (light theme)
   useEffect(() => {
-    if (document.getElementById("leaflet-dark-tooltip")) return;
+    if (document.getElementById("cf-leaflet-tooltip")) return;
     const style = document.createElement("style");
-    style.id = "leaflet-dark-tooltip";
+    style.id = "cf-leaflet-tooltip";
     style.textContent = `
-      .dark-tooltip { background: #12151cee !important; border: 1px solid #2a3150 !important; border-radius: 8px !important; padding: 10px 14px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important; color: #fff !important; }
-      .dark-tooltip::before { border-top-color: #2a3150 !important; }
-      .leaflet-container { background: #e8e8e8 !important; }
+      .cf-tooltip { background: #ffffffee !important; border: 1px solid ${C.border} !important; border-radius: 8px !important; padding: 10px 14px !important; box-shadow: 0 8px 24px rgba(15,23,42,0.12) !important; color: ${C.text} !important; }
+      .cf-tooltip::before { border-top-color: ${C.border} !important; }
+      .leaflet-container { background: #e6ecf2 !important; }
     `;
     document.head.appendChild(style);
   }, []);
@@ -1060,7 +1055,7 @@ function TimelineOverlay({ data }) {
             return (
               <g key={i}>
                 {/* Row stripe */}
-                {i % 2 === 1 && <rect x={0} y={y} width={svgW} height={rowH} fill={C.bg} opacity="0.3" />}
+                {i % 2 === 1 && <rect x={0} y={y} width={svgW} height={rowH} fill={C.surfaceAlt} />}
 
                 {/* Label */}
                 <text x={leftPad - 6} y={y + rowH / 2 + 3} textAnchor="end"
@@ -1327,7 +1322,7 @@ function MOAPhaseMatrix({ data }) {
             return (
               <g>
                 <rect x={px} y={py} width={200} height={Math.min(panelH, 120)} rx={6}
-                  fill={C.bg} stroke={C.border} strokeWidth="1" />
+                  fill={C.surface} stroke={C.borderHover} strokeWidth="1" />
                 <text x={px + 8} y={py + 14} fill={C.accent} fontSize="13" fontWeight="700" fontFamily={font}>
                   {hovered.moa} — {hovered.phase}
                 </text>
@@ -1618,9 +1613,9 @@ export default function IBDCompetitiveIntel() {
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
-          <div style={styles.logo}>CI</div>
-          <div>
-            <div style={styles.title}>IBD Competitive Intelligence</div>
+          <img src={`${import.meta.env.BASE_URL}campfield-logo.svg`} alt="cAMPfield Therapeutics" style={styles.logo} />
+          <div style={{ borderLeft: `1px solid ${C.border}`, paddingLeft: 14 }}>
+            <div style={styles.title}>Competitive Intelligence</div>
             <div style={styles.subtitle}>UC & CD Clinical Trial Landscape • Powered by Live Registry Search</div>
           </div>
         </div>
@@ -1846,7 +1841,7 @@ export default function IBDCompetitiveIntel() {
                                   {(group.mechanisms || []).map((m, mi) => {
                                     const drugs = m.drugs || [];
                                     return drugs.length > 0 ? drugs.map((d, di) => (
-                                      <tr key={`${mi}-${di}`} style={{ background: mi % 2 === 0 ? "transparent" : C.surface + "88" }}>
+                                      <tr key={`${mi}-${di}`} style={{ background: mi % 2 === 0 ? "transparent" : C.surfaceAlt }}>
                                         {di === 0 && (
                                           <td style={{ ...styles.td, fontWeight: 500, color: C.text, borderRight: `2px solid ${gColor}22` }}
                                             rowSpan={drugs.length}>
@@ -1881,7 +1876,7 @@ export default function IBDCompetitiveIntel() {
                                         </td>
                                       </tr>
                                     )) : (
-                                      <tr key={mi} style={{ background: mi % 2 === 0 ? "transparent" : C.surface + "88" }}>
+                                      <tr key={mi} style={{ background: mi % 2 === 0 ? "transparent" : C.surfaceAlt }}>
                                         <td style={{ ...styles.td, fontWeight: 500, color: C.text }}>{m.mechanism}</td>
                                         <td colSpan={5} style={{ ...styles.td, color: C.textDim, fontStyle: "italic" }}>No drugs listed</td>
                                         <td style={styles.td}>
@@ -1922,7 +1917,7 @@ export default function IBDCompetitiveIntel() {
                               </thead>
                               <tbody>
                                 {data.emergingTargets.map((t, i) => (
-                                  <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surface + "88" }}>
+                                  <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surfaceAlt }}>
                                     <td style={{ ...styles.td, fontWeight: 600, color: C.text }}>{t.target}</td>
                                     <td style={styles.td}><MOABadge moa={t.group || t.target} /></td>
                                     <td style={{ ...styles.td, color: C.text }}>{t.leadProgram}</td>
@@ -1955,7 +1950,7 @@ export default function IBDCompetitiveIntel() {
                       </thead>
                       <tbody>
                         {data.sponsors.map((s, i) => (
-                          <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surface + "88" }}>
+                          <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : C.surfaceAlt }}>
                             <td style={{ ...styles.td, fontWeight: 600, color: C.text }}>{s.company}</td>
                             <td style={{ ...styles.td, fontSize: 11 }}>{(s.marketedProducts || []).join(", ") || "—"}</td>
                             <td style={styles.td}>
